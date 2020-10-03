@@ -43,6 +43,8 @@ winetricks --unattended dotnet20 && sleep 5
 
 (wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe" ; wine RedAlert1_Online_Installer.exe /silent ; sleep 20)
 
+cp -Rvp ./RedAlert1_Online ./.wine/drive_c/
+
 # Disable WINEPREFIX changes
 echo "disable" > "$WINEPREFIX/.update-timestamp"
 
@@ -53,7 +55,7 @@ echo "disable" > "$WINEPREFIX/.update-timestamp"
 # DPI dword value 240=f0 180=b4 120=78 110=6e 96=60
 ( cd "$WINEPREFIX"; sed -i 's|"LogPixels"=dword:00000060|"LogPixels"=dword:00000078|' user.reg ; sed -i '/"WheelScrollLine*/a\\"LogPixels"=dword:00000078' user.reg ) || true
 
-cp -Rvp ./.wine ra-mp/ ; cp -Rvp ./RedAlert1_Online ra-mp/.wine/drive_c/
+cp -Rvp ./.wine ra-mp/ ;
 
 wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
 chmod +x ./appimagetool-x86_64.AppImage

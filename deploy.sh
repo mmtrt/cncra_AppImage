@@ -53,7 +53,7 @@ echo "disable" > "$WINEPREFIX/.update-timestamp"
 # DPI dword value 240=f0 180=b4 120=78 110=6e 96=60
 ( cd "$WINEPREFIX"; sed -i 's|"LogPixels"=dword:00000060|"LogPixels"=dword:00000078|' user.reg ; sed -i '/"WheelScrollLine*/a\\"LogPixels"=dword:00000078' user.reg ) || true
 
-cp -Rvp ./.wine ra-mp/
+cp -Rvp ./.wine ra-mp/ ; cp -Rvp ./RedAlert1_Online ra-mp/.wine/drive_c/
 
 wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
 chmod +x ./appimagetool-x86_64.AppImage

@@ -41,7 +41,7 @@ export WINEPREFIX=$(readlink -f ./.wine)
 wineboot && sleep 5
 winetricks --unattended dotnet20 && sleep 5
 
-(wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe" ; wine RedAlert1_Online_Installer.exe /silent ; sleep 10)
+(wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe" ; wine RedAlert1_Online_Installer.exe /silent ; sleep 20)
 
 # Disable WINEPREFIX changes
 echo "disable" > "$WINEPREFIX/.update-timestamp"

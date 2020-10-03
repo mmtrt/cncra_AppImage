@@ -49,7 +49,7 @@ cp -Rvp ./RedAlert1_Online ./.wine/drive_c/
 echo "disable" > "$WINEPREFIX/.update-timestamp"
 
 # Removing any existing user data
-( cd "$WINEPREFIX/drive_c/" ; rm -rf users ; rm windows/temp/* ) || true
+( cd "$WINEPREFIX/drive_c/" ; rm -rf users ; rm windows/Installer/* ) || true
 
 # Pre patching dpi setting in WINEPREFIX
 # DPI dword value 240=f0 180=b4 120=78 110=6e 96=60

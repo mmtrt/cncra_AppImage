@@ -43,7 +43,9 @@ winetricks --unattended dotnet20 && sleep 5
 
 (wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe" ; wine RedAlert1_Online_Installer.exe /silent ; sleep 20)
 
-(wine ./RedAlert1_Online/RA1MPLauncher.exe & ; sleep 10 ; wineserver -k)
+wine ./RedAlert1_Online/RA1MPLauncher.exe &
+sleep 10
+wineserver -k
 
 cp -Rvp ./RedAlert1_Online ./.wine/drive_c/
 

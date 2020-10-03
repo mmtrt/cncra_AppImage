@@ -42,7 +42,7 @@ DesktopFilePath="${HOME}/.local/share/applications/$progName.desktop"
 echo "[Desktop Entry]"
 echo "Type=Application"
 echo "Encoding=UTF-8"
-echo "Name=$proName"
+echo "Name=$progName"
 echo "Comment="
 echo "Exec=$progName"
 echo "Icon=$progName"
@@ -51,7 +51,7 @@ echo "Terminal=false"
 echo "StartupWMClass=RA1MPLauncher.exe,RA95Launcher.exe"
 echo "Keywords=game"
 } >> "$DesktopFilePath"
-
+fi
 }
 
 # check for wine appimage

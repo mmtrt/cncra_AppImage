@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=cncra
+Comment=
+Exec=AppRun
+Icon=cncra
+Categories=Game;
+Terminal=false
+StartupWMClass=RA1MPLauncher.exe
+Keywords=game

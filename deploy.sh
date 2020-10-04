@@ -36,4 +36,4 @@ wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/ap
 chmod +x ./appimagetool-x86_64.AppImage
 ./appimagetool-x86_64.AppImage --appimage-extract
 
-export ARCH=x86_64; squashfs-root/AppRun -v ./ra-mp -u "gh-releases-zsync|mmtrt|cncra_AppImage|continuous-testing|cncra*.AppImage.zsync" cncra_${ARCH}.AppImage
+export ARCH=x86_64; squashfs-root/AppRun -v ./ra-mp -u "gh-releases-zsync|mmtrt|cncra_AppImage|continuous-test|cncra*.AppImage.zsync" cncra_${ARCH}.AppImage

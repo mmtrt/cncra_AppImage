@@ -5,31 +5,13 @@ HERE="$(dirname "$(readlink -f "${0}")")"
 progName="cncra"
 progArch="-x86_64"
 progVer=
-progRealPath="$HERE/.wine/drive_c/RedAlert1_Online"
 progHome="$HOME/.$progName"
+progRealPath="$progHome/RedAlert1_Online"
 progBin="RA1MPLauncher.exe"
 progIcoD="$HOME/.local/share/applications/$progName.desktop"
 
-# env used by unionfs-fuse
-RO_WINEPREFIX="$HERE/.wine/"
-MNT_WINEPREFIX="$progHome/.wine"
-TMP_WINEPREFIX_OVERLAY=/tmp/."${progName}".unionfs
-
 # Symlink stuff
-mkdir -p "$MNT_WINEPREFIX" "$TMP_WINEPREFIX_OVERLAY" || exit 1
-# Delete broken symlinks
-find -L "$progHome" -maxdepth 2 -type l -delete
-# Update existing symlinks, add new symlinks
-cp -urs "$progRealPath/"* "$progHome" 2> /dev/null
-
-# do unionfs-fuse magic here
-"$HERE"/usr/bin/unionfs-fuse -o use_ino,nonempty,uid=$UID -ocow "$TMP_WINEPREFIX_OVERLAY"=RW:"$RO_WINEPREFIX"=RO "$MNT_WINEPREFIX" || exit 1
-
-function finish {
-  echo "Cleaning up"
-  killall "$HERE"/usr/bin/unionfs-fuse
-}
-trap finish EXIT
+mkdir -p "$progHome" || exit 1
 
 dkico() {
 if [[ ! -f $progIcoD ]]; then
@@ -76,7 +58,26 @@ exit 1
 fi
 
 # Create custom $WINEPREFIX and add $WINEDLLOVERRIDES
-export WINEPREFIX="${progHome}/.wine" WINEDLLOVERRIDES="mscoree,mshtml=" WINEDEBUG="fixme-all" WINEARCH="win32"
+export WINEPREFIX="${progHome}/.wine" WINEDLLOVERRIDES="mshtml=" WINEDEBUG="fixme-all" WINEARCH="win32"
+
+if [ ! -d $WINEPREFIX ]; then
+
+if [ ! -f "$HOME"/.cache/wine/wine-mono-4.9.4.msi ]; then
+mkdir -p "$HOME"/.cache/wine
+ln -s "$HERE"/winedata/wine-mono-4.9.4.msi "$HOME"/.cache/wine/
+fi
+
+"$WINE" wineboot
+
+"$WINE" uninstaller --remove "{0A3CE9B1-FEEE-59FE-9F5B-6AD87E9D6D55}"
+
+ln -s "$HERE"/winedata/RedAlert1_Online_Installer.exe "$progHome"
+
+$WINE "$HERE"/winedata/dotnetfx.exe /q /c:"install.exe /q"
+$WINE "$progHome"/RedAlert1_Online_Installer.exe /silent
+rm "$progHome"/RedAlert1_Online_Installer.exe
+
+fi
 
 # Passing args to wine apps
 for i; do # for i = for i in "$@"
@@ -93,5 +94,5 @@ if [ "$1" == "winecfg" ] ; then
 elif [ "$1" == "install" ]; then
   dkico
 else
-  $WINE "$progHome/$progBin" "${args[@]}"
+  $WINE "$progRealPath/$progBin" "${args[@]}"
 fi

@@ -73,10 +73,13 @@ fi
 
 ln -s "$HERE"/winedata/RedAlert1_Online_Installer.exe "$progHome"
 
-$WINE "$HERE"/winedata/dotnetfx.exe /q /c:"install.exe /q"
-$WINE "$progHome"/RedAlert1_Online_Installer.exe /silent
-rm "$progHome"/RedAlert1_Online_Installer.exe
+# silent flag for this /q /c:"install.exe /q"
+$WINE "$HERE"/winedata/dotnetfx.exe
 
+# silent flag for this /silent
+$WINE "$progHome"/RedAlert1_Online_Installer.exe 
+
+rm "$progHome"/RedAlert1_Online_Installer.exe
 fi
 
 # Passing args to wine apps

@@ -96,6 +96,8 @@ if [ "$1" == "winecfg" ] ; then
   $WINE "winecfg"
 elif [ "$1" == "install" ]; then
   dkico
+elif [ -f "$progRealPath"/"$progBin" ]; then
+  $WINE "$progRealPath"/"$progBin" "${args[@]}"
 else
-  $WINE "$progRealPath/$progBin" "${args[@]}"
+  $WINE "$WINEPREFIX"/drive_c/Games/CnCNet/RedAlert1_Online/"$progBin" "${args[@]}"
 fi

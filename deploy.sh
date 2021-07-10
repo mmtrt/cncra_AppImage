@@ -20,6 +20,7 @@ cp -r icons ra-mp/usr/share ; cp cncra.png ra-mp
 wget "https://dl.winehq.org/wine/wine-mono/5.1.1/wine-mono-5.1.1-x86.msi"
 wget "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"
 wget "https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe"
+wget "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe"
 
 cp -Rvp ./*.exe ra-mp/winedata ; cp -Rvp ./*.msi ra-mp/winedata
 
@@ -37,8 +38,8 @@ export WINEDEBUG="-all"
 cncras ; rm ./*AppImage*
 
 # Create winetricks & wine cache
-mkdir -p /home/runner/.cache/{wine,winetricks}/dotnet20 ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
-cp -Rvp *.msi /home/runner/.cache/wine/
+mkdir -p /home/runner/.cache/{wine,winetricks}/{dotnet20,ahk} ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
+cp -Rvp *.msi /home/runner/.cache/wine/ ; cp -Rvp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk
 
 # Create WINEPREFIX
 wineboot ; sleep 5

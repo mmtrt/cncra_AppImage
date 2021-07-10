@@ -46,15 +46,15 @@ wineboot ; sleep 5
 winetricks -q dotnet20 ; sleep 5
 
 # Install game
-(wine RedAlert1_Online_Installer.exe /silent ; sleep 20)
+# (wine RedAlert1_Online_Installer.exe /silent ; sleep 20)
 ls -al ./
 
 # Launch game
-wine ./RedAlert1_Online/RA1MPLauncher.exe &
-sleep 10
-wineserver -k
+# wine ./RedAlert1_Online/RA1MPLauncher.exe &
+# sleep 10
+# wineserver -k
 
-cp -Rvp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
+# cp -Rvp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 
 # Removing any existing user data
 ( cd "$WINEPREFIX/drive_c/" ; rm -rf users ; rm windows/temp/* ) || true
@@ -63,7 +63,7 @@ cp -Rvp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 # DPI dword value 240=f0 180=b4 120=78 110=6e 96=60
 ( cd "$WINEPREFIX"; sed -i 's|"LogPixels"=dword:00000060|"LogPixels"=dword:0000006e|' ./user.reg ; sed -i 's|"LogPixels"=dword:00000060|"LogPixels"=dword:0000006e|' ./system.reg ; sed -i 's/winemenubuilder.exe -a -r/winemenubuilder.exe -r/g' ./system.reg ) || true
 
-cp -Rvp $WINEPREFIX ra-mp/ ; rm -rf $WINEPREFIX ; rm -rf /ra-mp/winedata
+cp -Rvp $WINEPREFIX ra-mp/ ; rm -rf $WINEPREFIX
 
 ( cd ra-mp ; wget -qO- 'https://gist.github.com/mmtrt/6d111388fadf6a08b7f4c41cdc250080/raw/dc5e6918397317adce3e63e490a23c40d90f0186/cncraswp.patch' | patch -p1 )
 

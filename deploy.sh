@@ -36,12 +36,16 @@ export WINEDEBUG="-all"
 
 cncras ; rm ./*AppImage*
 
+# Create winetricks & wine cache
+mkdir -p /home/runner/.cache/{wine,winetricks}/dotnet20 ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
+cp *.msi /home/runner/.cache/wine/
+
 # Create WINEPREFIX
 wineboot ; sleep 5
 winetricks -q dotnet20 ; sleep 5
 
 # Install game
-(wine /ra-mp/winedata/RedAlert1_Online_Installer.exe /silent ; sleep 20)
+(wine RedAlert1_Online_Installer.exe /silent ; sleep 20)
 ls -al ./
 
 # Launch game

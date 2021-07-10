@@ -38,7 +38,7 @@ cncras ; rm ./*AppImage*
 
 # Create winetricks & wine cache
 mkdir -p /home/runner/.cache/{wine,winetricks}/dotnet20 ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
-cp *.msi /home/runner/.cache/wine/
+cp -Rvp *.msi /home/runner/.cache/wine/
 
 # Create WINEPREFIX
 wineboot ; sleep 5

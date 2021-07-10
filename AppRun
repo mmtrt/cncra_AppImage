@@ -81,19 +81,20 @@ if [ ! -d $WINEPREFIX ]; then
 if [ ! -f "$HOME"/.cache/wine/wine-mono-5.1.1-x86.msi ]; then
 mkdir -p "$HOME"/.cache/wine
 ln -s "$HERE"/winedata/wine-mono-5.1.1-x86.msi "$HOME"/.cache/wine/
+elif [ ! -f "$HOME"/.cache/winetricks/dotnet20/dotnetfx.exe ]; then
+mkdir -p "$HOME"/.cache/winetricks/dotnet20
+ln -s "$HERE"/winedata/dotnetfx.exe "$HOME"/.cache/winetricks/dotnet20/
+elif [ ! -f "$HOME"/.cache/winetricks/ahk/AutoHotkey104805_Install.exe ]; then
+mkdir -p "$HOME"/.cache/winetricks/ahk
+ln -s "$HERE"/winedata/AutoHotkey104805_Install.exe "$HOME"/.cache/winetricks/ahk/
 fi
 
-wine wineboot
-
-wine uninstaller --remove "{0A3CE9B1-FEEE-59FE-9F5B-6AD87E9D6D55}"
+winetricks dotnet20
 
 ln -s "$HERE"/winedata/RedAlert1_Online_Installer.exe "$progHome"
 
-# silent flag for this /q /c:"install.exe /q"
-wine "$HERE"/winedata/dotnetfx.exe
-
 # silent flag for this /silent
-wine "$progHome"/RedAlert1_Online_Installer.exe 
+wine "$progHome"/RedAlert1_Online_Installer.exe
 
 rm "$progHome"/RedAlert1_Online_Installer.exe
 fi

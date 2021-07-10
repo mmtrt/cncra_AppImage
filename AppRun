@@ -61,7 +61,7 @@ function winetricks {
 else
 echo "wine-stable appimage is missing can not run cncra"
 echo ""
-echo "Download wine-stable*.appimage from https://github.com/mmtrt/WINE_Appimage/releases"
+echo "Download wine-stable*.appimage from https://github.com/mmtrt/WINE_AppImage/releases"
 echo ""
 echo "Then"
 echo ""
@@ -76,7 +76,7 @@ fi
 # Create custom $WINEPREFIX and add $WINEDLLOVERRIDES
 export WINEPREFIX="${progHome}/.wine" WINEDLLOVERRIDES="mshtml=" WINEDEBUG="fixme-all" WINEARCH="win32"
 
-if [ ! -d $WINEPREFIX ]; then
+if [[ ! -d $WINEPREFIX ]]; then
 
 if [ ! -f "$HOME"/.cache/wine/wine-mono-5.1.1-x86.msi ]; then
 mkdir -p "$HOME"/.cache/wine

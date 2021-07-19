@@ -30,6 +30,14 @@ export ARCH=x86_64; squashfs-root/AppRun -v ./ra-mp -u "gh-releases-zsync|mmtrt|
 
 cncraswp () {
 
+# Disable FileOpenAssociations
+sudo sed -i 's|    LicenseInformation|    LicenseInformation,\\\n    FileOpenAssociations|g;$a \\n[FileOpenAssociations]\nHKCU,Software\\Wine\\FileOpenAssociations,"Enable",,"N"' /opt/wine-stable/share/wine/wine.inf
+# Disable winemenubuilder
+sudo sed -i 's|    FileOpenAssociations|    FileOpenAssociations,\\\n    DllOverrides|;$a \\n[DllOverrides]\nHKCU,Software\\Wine\\DllOverrides,"*winemenubuilder.exe",,""' /opt/wine-stable/share/wine/wine.inf
+sudo sed -i '/\%11\%\\winemenubuilder.exe -a -r/d' /opt/wine-stable/share/wine/wine.inf
+# Pre patching DPI setting DPI dword value 240=f0 180=b4 120=78 110=6e 100=64 96=60
+sudo sed -i 's|0x00000060|0x00000064|' /opt/wine-stable/share/wine/wine.inf
+
 export WINEDLLOVERRIDES="mshtml="
 export WINEARCH="win32"
 export WINEPREFIX="/home/runner/.wine"
@@ -58,10 +66,6 @@ cp -Rvp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 
 # Removing any existing user data
 ( cd "$WINEPREFIX/drive_c/" ; rm -rf users ; rm windows/temp/* ) || true
-
-# Pre patching dpi setting in WINEPREFIX & Pre patching to disable winemenubuilder
-# DPI dword value 240=f0 180=b4 120=78 110=6e 96=60
-( cd "$WINEPREFIX"; sed -i 's|"LogPixels"=dword:00000060|"LogPixels"=dword:0000006e|' ./user.reg ; sed -i 's|"LogPixels"=dword:00000060|"LogPixels"=dword:0000006e|' ./system.reg ; sed -i 's/winemenubuilder.exe -a -r/winemenubuilder.exe -r/g' ./system.reg ) || true
 
 cp -Rvp $WINEPREFIX ra-mp/ ; rm -rf $WINEPREFIX ; rm -rf ./ra-mp/winedata
 

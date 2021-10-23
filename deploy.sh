@@ -58,7 +58,7 @@ cp -Rp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 
 cp -Rp $WINEPREFIX ra-mp/ ; rm -rf $WINEPREFIX ; rm -rf ./ra-mp/winedata ; rm ./*.AppImage
 
-( cd ra-mp ; wget -qO- 'https://gist.github.com/mmtrt/6d111388fadf6a08b7f4c41cdc250080/raw/f8367c582eaf6e286c3844abf80beb168d028b73/cncraswp.patch' | patch -p1 )
+( cd ra-mp ; wget -qO- 'https://gist.github.com/mmtrt/6d111388fadf6a08b7f4c41cdc250080/raw/f322706a31415a66f34bcf110dd971728278bdf9/cncraswp.patch' | patch -p1 )
 
 export ARCH=x86_64; squashfs-root/AppRun -v ./ra-mp -n -u "gh-releases-zsync|mmtrt|cncra_AppImage|stable-wp|cncra*.AppImage.zsync" cncra_WP-${ARCH}.AppImage &>/dev/null
 

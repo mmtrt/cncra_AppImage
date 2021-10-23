@@ -51,6 +51,23 @@ cp -Rp *.msi /home/runner/.cache/wine/ ; cp -Rp AutoHotkey104805_Install.exe /ho
 # Install game
 ( ./wine-stable.AppImage wine RedAlert1_Online_Installer.exe /silent ; sleep 5 )
 
+# Download game updates manually
+for pkgs in CnCNet5Version.txt cncnet5.7z GeoIP.7z hints.7z _Servers.7z; do
+wget -q "https://downloads.cncnet.org/updates/cncnet5/${pkgs}"
+if [[ $pkgs = "CnCNet5Version.txt" ]]; then
+mkdir -p tmp/CnCNet5/Others ; mv $pkgs tmp/CnCNet5/Others
+elif [[ $pkgs = "_Servers.7z" || $pkgs = "GeoIP.7z" || $pkgs = "hints.7z" ]]; then
+7z x -aos "$pkgs" "-otmp/CnCNet5/Others" &>/dev/null
+elif [[ $pkgs = "Icons.7z" || $pkgs = "LAN.7z" || $pkgs = "Language.7z" || $pkgs = "Sounds.7z" ]]; then
+7z x -aos "$pkgs" "-otmp/CnCNet5" &>/dev/null
+elif [[ $pkgs = "cncnet5.7z" ]]; then
+7z x "$pkgs" -so > "tmp/cncnet5.exe"
+else
+7z x -aos "$pkgs" "-otmp" &>/dev/null
+fi
+done
+
+cp -Rp tmp/* RedAlert1_Online/ ; rm ./*.7z
 cp -Rp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 
 # Removing any existing user data

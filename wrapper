@@ -1,0 +1,128 @@
+# APP env
+progName="cncra"
+progArch="-x86_64"
+progVer=
+progHome="$HOME/.$progName"
+progBin="RA1MPLauncher.exe"
+progIcoD="$HOME/.local/share/applications/$progName.desktop"
+
+if [ -d "$APPDIR/winedata/.wine" ]; then
+progRealPath="$APPDIR/winedata/.wine/drive_c/RedAlert1_Online"
+# env used by unionfs-fuse
+# WINEPREFIX in the AppDir
+RO_WINEPREFIX="$APPDIR/winedata/.wine"
+MNT_WINEPREFIX="$progHome/.wine"
+RW_WINEPREFIX_OVERLAY=/tmp/."${progName}".unionfs
+else
+progRealPath="$progHome/Games/CnCNet/RedAlert1_Online"
+# WINE env
+export WINEPREFIX=${WINEPREFIX:-"$progHome/.wine"}
+mkdir -p "$WINEPREFIX/drive_c/Games/CnCNet/RedAlert1_Online"
+fi
+export WINEARCH=${WINEARCH:-"win32"}
+export WINEDLLOVERRIDES=${WINEDLLOVERRIDES:-"mshtml="}
+export WINEDEBUG=${WINEDEBUG:-"fixme-all"}
+export WINELOADER=${WINELOADER:-"$APPDIR/opt/wine-stable/bin/wine"}
+
+# Symlink stuff
+mkdir -p "$progHome" || exit 1
+
+dkico() {
+if [[ ! -f $progIcoD ]]; then
+
+cp -r "$APPDIR"/usr/share/icons "$HOME"/.local/share
+mkdir -p "$HOME/.local/share/applications"
+DesktopFilePath="$HOME/.local/share/applications/$progName.desktop"
+
+{
+echo "[Desktop Entry]"
+echo "Type=Application"
+echo "Encoding=UTF-8"
+echo "Name=$progName"
+echo "Comment="
+echo "Icon=$progName"
+echo "TryExec=${OWD}/${progName}_${progArch}.AppImage"
+echo "Exec=${OWD}/${progName}_${progArch}.AppImage %F"
+echo "Categories=Game;"
+echo "Terminal=false"
+echo "StartupWMClass=RA1MPLauncher.exe,RA95Launcher.exe"
+echo "Keywords=game"
+} >> "$DesktopFilePath"
+fi
+}
+
+
+if [ -d "$APPDIR/winedata/.wine" ]; then
+if [[ ! -f $progHome/RA1MPLauncher.exe ]]; then
+
+cp -Rvp "$progRealPath/"* "$progHome"/ &>/dev/null
+
+fi
+
+# Load bundled WINEPREFIX if existing and if $WINEPREFIX is not set
+if [ -d "$APPDIR/winedata/.wine" ] && [ -z "$WINEPREFIX" ] ; then
+  mkdir -p "$MNT_WINEPREFIX" "$RW_WINEPREFIX_OVERLAY"
+  if [ ! -e "$MNT_WINEPREFIX/drive_c" ] ; then
+    unionfs-fuse -o use_ino,uid=$UID -ocow "$RW_WINEPREFIX_OVERLAY"=RW:"$RO_WINEPREFIX"=RO "$MNT_WINEPREFIX" || exit 1
+    trap atexit EXIT
+  fi
+  export WINEPREFIX="$MNT_WINEPREFIX"
+elif [[ ! -d "$APPDIR/winedata/.wine" ]]; then
+
+if [ ! -f "$HOME"/.cache/wine/wine-mono-5.1.1-x86.msi ]; then
+mkdir -p "$HOME"/.cache/wine
+ln -s "$APPDIR"/winedata/wine-mono-5.1.1-x86.msi "$HOME"/.cache/wine/
+elif [ ! -f "$HOME"/.cache/winetricks/dotnet20/dotnetfx.exe ]; then
+mkdir -p "$HOME"/.cache/winetricks/dotnet20
+ln -s "$APPDIR"/winedata/dotnetfx.exe "$HOME"/.cache/winetricks/dotnet20/
+elif [ ! -f "$HOME"/.cache/winetricks/ahk/AutoHotkey104805_Install.exe ]; then
+mkdir -p "$HOME"/.cache/winetricks/ahk
+ln -s "$APPDIR"/winedata/AutoHotkey104805_Install.exe "$HOME"/.cache/winetricks/ahk/
+
+winetricks dotnet20
+
+# silent flag for this /silent
+wine "$APPDIR"/RedAlert1_Online_Installer.exe
+
+fi
+fi
+fi
+
+atexit ()
+{
+  while pgrep -f "cncnet5" ; do sleep 1 ; done
+  pkill -f "unionfs-fuse"
+  sleep 1
+  rm -r "$MNT_WINEPREFIX" # "$RW_WINEPREFIX_OVERLAY"
+}
+
+# Passing args to wine apps
+for i; do # for i = for i in "$@"
+    # Add path in Wine form (e.g. "z:/home/user/Desktop/lol.xyz")
+    if [[ -f /${i#?:} ]]; then 
+        args+=("z:${i#?:}")   # When opened through .desktop or Wine path (e.g. z:/*)
+    elif [[ "${i:0:1}" = "-" ]]; then
+        args+=("${i/#-//}")
+    fi
+done
+
+# Launch wineboot/winecfg/winetricks if requested.
+# If the executable exists then launch it.
+case "$1" in
+  "install")
+    dkico
+    ;;
+  "winetricks")
+    winetricks "$2" "$3"
+    ;;
+  "msiexec"|"notepad"|"regedit"|"regsvr32"|"wineboot"|"winecfg"|"wineconsole"|"winedbg"|"winefile"|"winemine"|"winepath")
+    "$WINELOADER" "$1"
+    ;;
+  *)
+    if [ -d "$APPDIR/winedata/.wine" ]; then
+     "$WINELOADER" "$progHome/$progBin" "${args[@]}" 2>/dev/null
+    else
+     "$WINELOADER" "$WINEPREFIX"/drive_c/Games/CnCNet/RedAlert1_Online/"$progBin" "${args[@]}" 2>/dev/null
+    fi
+    ;;
+esac

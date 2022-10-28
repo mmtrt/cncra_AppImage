@@ -2,29 +2,23 @@
 
 cncras () {
 
-# Convert and copy icon which is needed for desktop integration into place:
+# Download icon:
 wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
-for width in 8 16 22 24 32 36 42 48 64 72 96 128 192 256; do
-    dir=icons/hicolor/${width}x${width}/apps
-    mkdir -p $dir
-    convert cncra.png -resize ${width}x${width} $dir/cncra.png
-done
 
-wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
-chmod +x ./appimagetool-x86_64.AppImage
-./appimagetool-x86_64.AppImage --appimage-extract &>/dev/null
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
 
-mkdir -p ra-mp/usr ra-mp/winedata ; cp cncra.desktop ra-mp ; cp AppRun ra-mp ;
-cp -r icons ra-mp/usr/share ; cp cncra.png ra-mp
+mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
 
-wget -q "https://dl.winehq.org/wine/wine-mono/5.1.1/wine-mono-5.1.1-x86.msi"
+wget -q "https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi"
 wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"
 wget -q "https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe"
 wget -q "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe"
 
 cp -Rp ./*.exe ra-mp/winedata ; cp -Rp ./*.msi ra-mp/winedata
 
-export ARCH=x86_64; squashfs-root/AppRun -v ./ra-mp -u "gh-releases-zsync|mmtrt|cncra_AppImage|stable|cncra*.AppImage.zsync" cncra_${ARCH}.AppImage &>/dev/null
+mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
+
+./builder --recipe cncra.yml
 
 }
 
@@ -32,24 +26,32 @@ cncraswp () {
 
 export WINEDLLOVERRIDES="mshtml="
 export WINEARCH="win32"
-export WINEPREFIX="/home/runner/.wine"
+export WINEPREFIX="/home/runner/work/cncra_AppImage/cncra_AppImage/AppDir/winedata/.wine"
 export WINEDEBUG="-all"
 
-cncras ; rm ./*AppImage*
+wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
 
-WINE_VER="$(wget -qO- https://dl.winehq.org/wine-builds/ubuntu/dists/focal/main/binary-i386/ | grep wine-stable | sed 's|_| |g;s|~| |g' | awk '{print $5}' | tail -n1)"
-wget -q https://github.com/mmtrt/WINE_AppImage/releases/download/continuous-stable/wine-stable_${WINE_VER}-x86_64.AppImage
-chmod +x *.AppImage ; mv wine-stable_${WINE_VER}-x86_64.AppImage wine-stable.AppImage
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
+
+mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
+
+wget -q "https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi"
+wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"
+wget -q "https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe"
+wget -q "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe"
+
+wget -q https://github.com/mmtrt/WINE_AppImage/releases/download/continuous-stable-4-i386/wine-stable-i386_4.0.4-x86_64.AppImage
+chmod +x *.AppImage ; mv wine-stable-i386_4.0.4-x86_64.AppImage wine-stable.AppImage
 
 # Create winetricks & wine cache
 mkdir -p /home/runner/.cache/{wine,winetricks}/{dotnet20,ahk} ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
-cp -Rp *.msi /home/runner/.cache/wine/ ; cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk
+cp -Rp *.msi /home/runner/.cache/wine/ ; cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk ; rm wrapper
 
 # Create WINEPREFIX
 ./wine-stable.AppImage winetricks -q dotnet20 ; sleep 5
 
 # Install game
-( ./wine-stable.AppImage wine RedAlert1_Online_Installer.exe /silent ; sleep 5 )
+( ./wine-stable.AppImage RedAlert1_Online_Installer.exe /silent ; sleep 5 )
 
 # Download game updates manually
 for pkgs in CnCNet5Version.txt cncnet5.7z GeoIP.7z hints.7z _Servers.7z; do
@@ -73,11 +75,13 @@ cp -Rp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 # Removing any existing user data
 ( cd "$WINEPREFIX/drive_c/" ; rm -rf users ) || true
 
-cp -Rp $WINEPREFIX ra-mp/ ; rm -rf $WINEPREFIX ; rm -rf ./ra-mp/winedata ; rm ./*.AppImage
+echo "disabled" > $WINEPREFIX/.update-timestamp
 
-( cd ra-mp ; wget -qO- 'https://gist.github.com/mmtrt/6d111388fadf6a08b7f4c41cdc250080/raw/f322706a31415a66f34bcf110dd971728278bdf9/cncraswp.patch' | patch -p1 )
+mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
 
-export ARCH=x86_64; squashfs-root/AppRun -v ./ra-mp -n -u "gh-releases-zsync|mmtrt|cncra_AppImage|stable-wp|cncra*.AppImage.zsync" cncra_WP-${ARCH}.AppImage &>/dev/null
+sed -i 's/stable|/stable-wp|/' cncra.yml
+
+./builder --recipe cncra.yml
 
 }
 

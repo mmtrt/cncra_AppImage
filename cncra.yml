@@ -33,6 +33,8 @@ AppDir:
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x871920D1991BC93C'
       - sourceline: 'deb https://dl.winehq.org/wine-builds/ubuntu/ jammy main'
         key_url: 'https://dl.winehq.org/wine-builds/winehq.key'
+      - sourceline: 'deb http://ppa.launchpad.net/graphics-drivers/ppa/ubuntu/ jammy main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xFCAE110B1118213C'
 
     include:
       - wine-staging-i386=7.19~jammy-1
@@ -40,6 +42,7 @@ AppDir:
       - dash
       - perl
       - coreutils
+      - nvidia-driver-520
 
   files:
     exclude:

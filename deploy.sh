@@ -48,7 +48,7 @@ chmod +x *.AppImage ; mv wine-stable-i386_4.0.4-x86_64.AppImage wine-stable.AppI
 
 # Create winetricks & wine cache
 mkdir -p /home/runner/.cache/{wine,winetricks}/{dotnet20,ahk} ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
-cp -Rp *.msi /home/runner/.cache/wine/ ; cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk ; rm wrapper
+cp -Rp *.msi /home/runner/.cache/wine/ ; cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk ; mv wrapper bak
 
 # Create WINEPREFIX
 ./wine-stable.AppImage winetricks -q dotnet20 ; sleep 5
@@ -89,6 +89,8 @@ sed -i "s|520|$NVDV|" cncra.yml
 sed -i "23s/"1.0"/"1.0_WP"/" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
+
+mv bak wrapper
 
 squashfs-root/AppRun --recipe cncra.yml
 

@@ -18,6 +18,10 @@ cp -Rp ./*.exe ra-mp/winedata ; cp -Rp ./*.msi ra-mp/winedata
 
 mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
 
+NVDV=$(wget "https://launchpad.net/~graphics-drivers/+archive/ubuntu/ppa/+packages?field.name_filter=&field.status_filter=published&field.series_filter=kinetic" -qO- | grep -Eo drivers-.*changes | sed -r "s|_| |g;s|-| |g" | tail -n1 | awk '{print $9}')
+
+sed -i "s|520|$NVDV|" cncra.yml
+
 ./builder --recipe cncra.yml
 
 }
@@ -78,6 +82,12 @@ cp -Rp ./RedAlert1_Online "$WINEPREFIX"/drive_c/
 echo "disabled" > $WINEPREFIX/.update-timestamp
 
 mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
+
+NVDV=$(wget "https://launchpad.net/~graphics-drivers/+archive/ubuntu/ppa/+packages?field.name_filter=&field.status_filter=published&field.series_filter=kinetic" -qO- | grep -Eo drivers-.*changes | sed -r "s|_| |g;s|-| |g" | tail -n1 | awk '{print $9}')
+
+sed -i "s|520|$NVDV|" cncra.yml
+
+sed -i "s|"1.0"|"1.0_WP"|" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
 

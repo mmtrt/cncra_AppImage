@@ -42,7 +42,12 @@ AppDir:
       - dash
       - perl
       - coreutils
-      - nvidia-driver-520
+      - libnvidia-compute-520:i386
+      - libnvidia-decode-520:i386
+      - libnvidia-encode-520:i386
+      - libnvidia-extra-520:i386
+      - libnvidia-fbc1-520:i386
+      - libnvidia-gl-520:i386
 
   files:
     exclude:

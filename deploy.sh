@@ -2,14 +2,11 @@
 
 cncras () {
 
-# Download icon:
-wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
-
 wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder ; ./builder --appimage-extract &>/dev/null
 wget -q "https://github.com/probonopd/static-tools/releases/download/continuous/mksquashfs-x86_64" -O squashfs-root/usr/bin/mksquashfs
 rm builder ; sed -i 's|xz|zstd|' squashfs-root/usr/lib/python3.8/site-packages/appimagebuilder/modules/prime/appimage_primer.py
 
-mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
+mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp
 
 wget -q "https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi"
 wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"
@@ -35,13 +32,11 @@ export WINEARCH="win32"
 export WINEPREFIX="/home/runner/work/cncra_AppImage/cncra_AppImage/AppDir/winedata/.wine"
 export WINEDEBUG="-all"
 
-wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
-
 wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder ; ./builder --appimage-extract &>/dev/null
 wget -q "https://github.com/probonopd/static-tools/releases/download/continuous/mksquashfs-x86_64" -O squashfs-root/usr/bin/mksquashfs
 rm builder ; sed -i 's|xz|zstd|' squashfs-root/usr/lib/python3.8/site-packages/appimagebuilder/modules/prime/appimage_primer.py
 
-mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
+mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp
 
 wget -q "https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi"
 wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"

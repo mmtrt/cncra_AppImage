@@ -1,9 +1,13 @@
 version: 1
 
 script:
-  - mkdir -p AppDir/winedata
+  # Remove any previous build cache data
+  - rm -rf AppDir appimage-builder-cache/var/cache/apt/archives/*wine* || true
+  - mkdir -p appimage-build/prime AppDir/winedata && cp wrapper AppDir
   # Add winetricks
   - wget -q -nc "https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks" -P ./AppDir/bin && chmod +x ./AppDir/bin/winetricks
+  # Add static appimage runtime
+  - wget -q "https://github.com/AppImage/type2-runtime/releases/download/continuous/runtime-fuse2-x86_64" -O appimage-build/prime/runtime-x86_64
   # Add WINE official light blue theme
   - wget -q -nc "https://github.com/mmtrt/sommelier-core/raw/master/themes/light/light.msstyles" -P ./AppDir/winedata/resources/themes/light
 

@@ -82,7 +82,7 @@ NVDV=$(wget "https://launchpad.net/~graphics-drivers/+archive/ubuntu/ppa/+packag
 
 sed -i "s|520|$NVDV|" cncra.yml
 
-sed -i "24s/"1.0"/"1.0_WP"/" cncra.yml
+sed -i "22s/"1.0"/"1.0_WP"/" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
 

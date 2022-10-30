@@ -2,7 +2,9 @@
 
 cncras () {
 
-wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder ; ./builder --appimage-extract &>/dev/null
+wget -q "https://github.com/probonopd/static-tools/releases/download/continuous/mksquashfs-x86_64" -O squashfs-root/usr/bin/mksquashfs
+rm builder ; sed -i 's|xz|zstd|' squashfs-root/usr/lib/python3.8/site-packages/appimagebuilder/modules/prime/appimage_primer.py
 
 mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp
 
@@ -19,7 +21,7 @@ NVDV=$(wget "https://launchpad.net/~graphics-drivers/+archive/ubuntu/ppa/+packag
 
 sed -i "s|520|$NVDV|" cncra.yml
 
-./builder --recipe cncra.yml
+squashfs-root/AppRun --recipe cncra.yml
 
 }
 
@@ -30,7 +32,9 @@ export WINEARCH="win32"
 export WINEPREFIX="/home/runner/work/cncra_AppImage/cncra_AppImage/AppDir/winedata/.wine"
 export WINEDEBUG="-all"
 
-wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder ; ./builder --appimage-extract &>/dev/null
+wget -q "https://github.com/probonopd/static-tools/releases/download/continuous/mksquashfs-x86_64" -O squashfs-root/usr/bin/mksquashfs
+rm builder ; sed -i 's|xz|zstd|' squashfs-root/usr/lib/python3.8/site-packages/appimagebuilder/modules/prime/appimage_primer.py
 
 mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp
 
@@ -82,13 +86,13 @@ NVDV=$(wget "https://launchpad.net/~graphics-drivers/+archive/ubuntu/ppa/+packag
 
 sed -i "s|520|$NVDV|" cncra.yml
 
-sed -i "24s/"1.0"/"1.0_WP"/" cncra.yml
+sed -i "23s/"1.0"/"1.0_WP"/" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
 
 mv bak wrapper
 
-./builder --recipe cncra.yml
+squashfs-root/AppRun --recipe cncra.yml
 
 }
 

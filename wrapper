@@ -24,8 +24,9 @@ export WINEDLLOVERRIDES=${WINEDLLOVERRIDES:-"mshtml="}
 export WINEDEBUG=${WINEDEBUG:-"fixme-all"}
 export WINELOADER=${WINELOADER:-"$APPDIR/opt/wine-stable/bin/wine"}
 
-# Symlink stuff
+if [ ! -d "$progHome" ];then
 mkdir -p "$progHome" || exit 1
+fi
 
 dkico() {
 if [[ ! -f $progIcoD ]]; then

@@ -11,8 +11,8 @@ progRealPath="$APPDIR/winedata/.wine/drive_c/RedAlert1_Online"
 # env used by unionfs-fuse
 # WINEPREFIX in the AppDir
 RO_WINEPREFIX="$APPDIR/winedata/.wine"
-MNT_WINEPREFIX="$progHome/.wine"
-RW_WINEPREFIX_OVERLAY=/tmp/."${progName}".unionfs
+RW_WINEPREFIX="$progHome/.wine"
+MNT_WINEPREFIX=/tmp/."${progName}".unionfs
 else
 progRealPath="$progHome/Games/CnCNet/RedAlert1_Online"
 # WINE env
@@ -61,9 +61,9 @@ fi
 
 # Load bundled WINEPREFIX if existing and if $WINEPREFIX is not set
 if [ -d "$APPDIR/winedata/.wine" ] && [ -z "$WINEPREFIX" ] ; then
-  mkdir -p "$MNT_WINEPREFIX" "$RW_WINEPREFIX_OVERLAY"
+  mkdir -p "$MNT_WINEPREFIX" "$RW_WINEPREFIX"
   if [ ! -e "$MNT_WINEPREFIX/drive_c" ] ; then
-    unionfs-fuse -o use_ino,uid=$UID -ocow "$RW_WINEPREFIX_OVERLAY"=RW:"$RO_WINEPREFIX"=RO "$MNT_WINEPREFIX" || exit 1
+    unionfs-fuse -o use_ino,uid=$UID -ocow "$RW_WINEPREFIX"=RW:"$RO_WINEPREFIX"=RO "$MNT_WINEPREFIX" || exit 1
     trap atexit EXIT
   fi
   export WINEPREFIX="$MNT_WINEPREFIX"

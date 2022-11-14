@@ -87,7 +87,7 @@ mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
 
 # sed -i "s|520|$NVDV|" cncra.yml
 
-sed -i "22s/"1.0"/"1.0_WP"/" cncra.yml
+sed -i "17s/"1.0"/"1.0_WP"/" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
 

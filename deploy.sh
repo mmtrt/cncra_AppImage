@@ -39,7 +39,6 @@ wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/
 
 mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
 
-wget -q "https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi"
 wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"
 wget -q "https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe"
 wget -q "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe"
@@ -49,7 +48,7 @@ chmod +x *.AppImage ; mv wine-stable-i386_4.0.4-x86_64.AppImage wine-stable.AppI
 
 # Create winetricks & wine cache
 mkdir -p /home/runner/.cache/{wine,winetricks}/{dotnet20,ahk} ; cp dotnetfx.exe /home/runner/.cache/winetricks/dotnet20
-cp -Rp *.msi /home/runner/.cache/wine/ ; cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk ; mv wrapper bak
+cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk ; mv wrapper bak
 
 # Create WINEPREFIX
 ./wine-stable.AppImage winetricks -q dotnet20 ; sleep 5

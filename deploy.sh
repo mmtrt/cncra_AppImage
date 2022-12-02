@@ -94,10 +94,39 @@ sed -i 's/stable|/stable-wp|/' cncra.yml
 
 }
 
+cncras-box86 () {
+
+# Download icon:
+wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
+
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
+
+mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
+
+wget -q "https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi"
+wget -q "https://downloads.cncnet.org/RedAlert1_Online_Installer.exe"
+wget -q "https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe"
+wget -q "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe"
+
+cp -Rp ./*.exe ra-mp/winedata ; cp -Rp ./*.msi ra-mp/winedata
+
+mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
+
+# NVDV=$(wget "https://launchpad.net/~graphics-drivers/+archive/ubuntu/ppa/+packages?field.name_filter=&field.status_filter=published&field.series_filter=kinetic" -qO- | grep -Eo drivers-.*changes | sed -r "s|_| |g;s|-| |g" | tail -n1 | awk '{print $9}')
+
+# sed -i "s|520|$NVDV|" cncra.yml
+
+./builder --recipe cncra-box86.yml
+
+}
+
 if [ "$1" == "stable" ]; then
     cncras
     ( mkdir -p dist ; mv cncra*.AppImage* dist/. ; cd dist || exit ; chmod +x ./*.AppImage )
 elif [ "$1" == "stablewp" ]; then
     cncraswp
+    ( mkdir -p dist ; mv cncra*.AppImage* dist/. ; cd dist || exit ; chmod +x ./*.AppImage )
+elif [ "$1" == "stable-box86" ]; then
+    cncras-box86
     ( mkdir -p dist ; mv cncra*.AppImage* dist/. ; cd dist || exit ; chmod +x ./*.AppImage )
 fi

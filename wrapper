@@ -71,19 +71,20 @@ if [ -d "$APPDIR/winedata/.wine" ] && [ -z "$WINEPREFIX" ] ; then
 else
 
  if [ ! -f "$HOME"/.cache/wine/wine-mono-4.7.5.msi ]; then
-   mkdir -p "$HOME"/.cache/wine
+   mkdir -p "$HOME"/.cache/wine ; rm "$HOME"/.cache/wine/wine-mono-4.7.5.msi
    ln -s "$APPDIR"/winedata/wine-mono-4.7.5.msi "$HOME"/.cache/wine/
  elif [ ! -f "$HOME"/.cache/winetricks/dotnet20/dotnetfx.exe ]; then
-   mkdir -p "$HOME"/.cache/winetricks/dotnet20
+   mkdir -p "$HOME"/.cache/winetricks/dotnet20 ; rm "$APPDIR"/winedata/dotnetfx.exe
    ln -s "$APPDIR"/winedata/dotnetfx.exe "$HOME"/.cache/winetricks/dotnet20/
  elif [ ! -f "$HOME"/.cache/winetricks/ahk/AutoHotkey104805_Install.exe ]; then
-   mkdir -p "$HOME"/.cache/winetricks/ahk
+   mkdir -p "$HOME"/.cache/winetricks/ahk ; rm "$APPDIR"/winedata/AutoHotkey104805_Install.exe
    ln -s "$APPDIR"/winedata/AutoHotkey104805_Install.exe "$HOME"/.cache/winetricks/ahk/
- elif [ ! -f "$WINEPREFIX"/drive_c/Games/CnCNet/RedAlert1_Online/"$progBin" ]; then
+ fi
+ if [ ! -f "$WINEPREFIX"/drive_c/Games/CnCNet/RedAlert1_Online/"$progBin" ]; then
    winetricks dotnet20
 
    # silent flag for this /silent
-   wine "$APPDIR"/winedata/RedAlert1_Online_Installer.exe
+   "$WINELOADER" "$APPDIR"/winedata/RedAlert1_Online_Installer.exe
  fi
 fi
 

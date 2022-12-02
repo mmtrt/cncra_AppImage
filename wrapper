@@ -53,38 +53,37 @@ fi
 }
 
 
-if [ -d "$APPDIR/winedata/.wine" ]; then
-  if [[ ! -f $progHome/RA1MPLauncher.exe ]]; then
+if [[ ! -f $progHome/RA1MPLauncher.exe ]] && [[ -d $APPDIR/winedata/.wine ]]; then
 
-    cp -Rvp "$progRealPath/"* "$progHome"/ &>/dev/null
+  cp -Rvp "$progRealPath/"* "$progHome"/ &>/dev/null
 
+fi
+
+# Load bundled WINEPREFIX if existing and if $WINEPREFIX is not set
+if [ -d "$APPDIR/winedata/.wine" ] && [ -z "$WINEPREFIX" ] ; then
+  mkdir -p "$MNT_WINEPREFIX" "$RW_WINEPREFIX"
+  if [ ! -e "$MNT_WINEPREFIX/drive_c" ] ; then
+    unionfs-fuse -o use_ino,uid=$UID -ocow "$RW_WINEPREFIX"=RW:"$RO_WINEPREFIX"=RO "$MNT_WINEPREFIX" || exit 1
+    trap atexit EXIT
   fi
+  export WINEPREFIX="$MNT_WINEPREFIX"
 
-  # Load bundled WINEPREFIX if existing and if $WINEPREFIX is not set
-  if [ -d "$APPDIR/winedata/.wine" ] && [ -z "$WINEPREFIX" ] ; then
-    mkdir -p "$MNT_WINEPREFIX" "$RW_WINEPREFIX"
-    if [ ! -e "$MNT_WINEPREFIX/drive_c" ] ; then
-      unionfs-fuse -o use_ino,uid=$UID -ocow "$RW_WINEPREFIX"=RW:"$RO_WINEPREFIX"=RO "$MNT_WINEPREFIX" || exit 1
-      trap atexit EXIT
-    fi
-    export WINEPREFIX="$MNT_WINEPREFIX"
-  elif [[ ! -d "$APPDIR/winedata/.wine" ]]; then
+else
 
-   if [ ! -f "$HOME"/.cache/wine/wine-mono-5.1.1-x86.msi ]; then
-     mkdir -p "$HOME"/.cache/wine
-     ln -s "$APPDIR"/winedata/wine-mono-5.1.1-x86.msi "$HOME"/.cache/wine/
-   elif [ ! -f "$HOME"/.cache/winetricks/dotnet20/dotnetfx.exe ]; then
-     mkdir -p "$HOME"/.cache/winetricks/dotnet20
-     ln -s "$APPDIR"/winedata/dotnetfx.exe "$HOME"/.cache/winetricks/dotnet20/
-   elif [ ! -f "$HOME"/.cache/winetricks/ahk/AutoHotkey104805_Install.exe ]; then
-     mkdir -p "$HOME"/.cache/winetricks/ahk
-     ln -s "$APPDIR"/winedata/AutoHotkey104805_Install.exe "$HOME"/.cache/winetricks/ahk/
+ if [ ! -f "$HOME"/.cache/wine/wine-mono-4.7.5.msi ]; then
+   mkdir -p "$HOME"/.cache/wine
+   ln -s "$APPDIR"/winedata/wine-mono-4.7.5.msi "$HOME"/.cache/wine/
+ elif [ ! -f "$HOME"/.cache/winetricks/dotnet20/dotnetfx.exe ]; then
+   mkdir -p "$HOME"/.cache/winetricks/dotnet20
+   ln -s "$APPDIR"/winedata/dotnetfx.exe "$HOME"/.cache/winetricks/dotnet20/
+ elif [ ! -f "$HOME"/.cache/winetricks/ahk/AutoHotkey104805_Install.exe ]; then
+   mkdir -p "$HOME"/.cache/winetricks/ahk
+   ln -s "$APPDIR"/winedata/AutoHotkey104805_Install.exe "$HOME"/.cache/winetricks/ahk/
+ elif [ ! -f "$WINEPREFIX"/drive_c/Games/CnCNet/RedAlert1_Online/"$progBin" ]; then
+   winetricks dotnet20
 
-     winetricks dotnet20
-
-     # silent flag for this /silent
-     wine "$APPDIR"/RedAlert1_Online_Installer.exe
-   fi
+   # silent flag for this /silent
+   wine "$APPDIR"/winedata/RedAlert1_Online_Installer.exe
  fi
 fi
 

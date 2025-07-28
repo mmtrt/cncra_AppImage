@@ -7,17 +7,18 @@ progBin="RA1MPLauncher.exe"
 progIcoD="$HOME/.local/share/applications/$progName.desktop"
 
 if [ -d "$APPDIR/winedata/.wine" ]; then
-progRealPath="$APPDIR/winedata/.wine/drive_c/RedAlert1_Online"
-# env used by unionfs-fuse
-# WINEPREFIX in the AppDir
-RO_WINEPREFIX="$APPDIR/winedata/.wine"
-RW_WINEPREFIX="$progHome/.wine"
-MNT_WINEPREFIX=/tmp/."${progName}".unionfs
+  progRealPath="$APPDIR/winedata/.wine/drive_c/RedAlert1_Online"
+  # env used by unionfs-fuse
+  # WINEPREFIX in the AppDir
+  RO_WINEPREFIX="$APPDIR/winedata/.wine"
+  RW_WINEPREFIX="$progHome/.wine"
+  MNT_WINEPREFIX=/tmp/."${progName}".unionfs
 else
-progRealPath="$progHome/Games/CnCNet/RedAlert1_Online"
-# WINE env
-export WINEPREFIX=${WINEPREFIX:-"$progHome/.wine"}
-mkdir -p "$WINEPREFIX/drive_c/Games/CnCNet/RedAlert1_Online"
+  progRealPath="$progHome/Games/CnCNet/RedAlert1_Online"
+  # WINE env
+  export WINEPREFIX=${WINEPREFIX:-"$progHome/.wine"}
+  export WINESERVER="$APPDIR/opt/wine-stable/bin/wineserver"
+  mkdir -p "$WINEPREFIX/drive_c/Games/CnCNet/RedAlert1_Online"
 fi
 export WINEARCH=${WINEARCH:-"win32"}
 export WINEDLLOVERRIDES=${WINEDLLOVERRIDES:-"mshtml="}
@@ -25,7 +26,7 @@ export WINEDEBUG=${WINEDEBUG:-"fixme-all"}
 export WINELOADER=${WINELOADER:-"$APPDIR/opt/wine-stable/bin/wine"}
 
 if [ ! -d "$progHome" ];then
-mkdir -p "$progHome" || exit 1
+  mkdir -p "$progHome" || exit 1
 fi
 
 dkico() {
@@ -82,7 +83,7 @@ else
    ln -s "$APPDIR"/winedata/AutoHotkey104805_Install.exe "$HOME"/.cache/winetricks/ahk/
  fi
  if [ ! -f "$WINEPREFIX"/drive_c/Games/CnCNet/RedAlert1_Online/"$progBin" ]; then
-   winetricks dotnet20
+   "$WINELOADER" winetricks -q dotnet20
 
    # silent flag for this /silent
    "$WINELOADER" "$APPDIR"/winedata/RedAlert1_Online_Installer.exe
@@ -92,7 +93,7 @@ fi
 atexit ()
 {
   while pgrep -f "cncnet5" ; do sleep 1 ; done
-  pkill -f "unionfs-fuse"
+  kill $(ps -ef | grep $progName.unionfs | awk '{print $2}' | head -1)
   sleep 1
   rm -r "$MNT_WINEPREFIX" # "$RW_WINEPREFIX_OVERLAY"
 }
@@ -120,11 +121,11 @@ case "$1" in
     "$WINELOADER" "$1"
     ;;
   "eglinfo"|"es2_info"|"es2gears_wayland"|"es2gears_x11"|"es2tri"|"glxinfo"|"glxheads"|"glxgears"|"glxdemo"|"vulkaninfo")
-    "$@"
+    "$WINELOADER" "$@"
     ;;
    "vkcube"|"vkcubepp"|"vkcube-wayland")
     export VK_INSTANCE_LAYERS="VK_LAYER_MESA_overlay"
-    "$@"
+    "$WINELOADER" "$@"
     ;;
   *)
     if [ -d "$APPDIR/winedata/.wine" ]; then

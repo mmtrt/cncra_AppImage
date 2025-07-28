@@ -5,7 +5,13 @@ cncras () {
 # Download icon:
 wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
 
-wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage" -O builder ; chmod +x builder ; ./builder --appimage-extract &>/dev/null
+
+# add custom mksquashfs
+wget -q "https://github.com/mmtrt/WINE_AppImage/raw/master/runtime/mksquashfs" -O squashfs-root/usr/bin/mksquashfs
+
+# force zstd format in appimagebuilder for appimages
+rm builder ; sed -i 's|xz|zstd|;s|AppImageKit|type2-runtime|' squashfs-root/usr/lib/python3.8/site-packages/appimagebuilder/modules/prime/appimage_primer.py
 
 mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
 
@@ -22,7 +28,7 @@ mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
 
 # sed -i "s|520|$NVDV|" cncra.yml
 
-./builder --recipe cncra.yml
+./squashfs-root/AppRun --recipe cncra.yml
 
 }
 
@@ -35,7 +41,13 @@ export WINEDEBUG="-all"
 
 wget -q https://github.com/mmtrt/cncra/raw/master/snap/gui/cncra.png
 
-wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.3/appimage-builder-1.0.3-x86_64.AppImage" -O builder ; chmod +x builder
+wget -q "https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage" -O builder ; chmod +x builder ; ./builder --appimage-extract &>/dev/null
+
+# add custom mksquashfs
+wget -q "https://github.com/mmtrt/WINE_AppImage/raw/master/runtime/mksquashfs" -O squashfs-root/usr/bin/mksquashfs
+
+# force zstd format in appimagebuilder for appimages
+rm builder ; sed -i 's|xz|zstd|;s|AppImageKit|type2-runtime|' squashfs-root/usr/lib/python3.8/site-packages/appimagebuilder/modules/prime/appimage_primer.py
 
 mkdir -p ra-mp/usr/share/icons ra-mp/winedata ; cp cncra.desktop ra-mp ; cp wrapper ra-mp ; cp cncra.png ra-mp/usr/share/icons
 
@@ -51,6 +63,7 @@ mkdir -p /home/runner/.cache/{wine,winetricks}/{dotnet20,ahk} ; cp dotnetfx.exe 
 cp -Rp AutoHotkey104805_Install.exe /home/runner/.cache/winetricks/ahk ; mv wrapper bak
 
 # Create WINEPREFIX
+./wine-stable.AppImage wineboot -i ; sleep 5
 ./wine-stable.AppImage winetricks -q dotnet20 ; sleep 5
 
 # Install game
@@ -90,7 +103,7 @@ sed -i "17s/"1.0"/"1.0_WP"/" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
 
-./builder --recipe cncra.yml
+./squashfs-root/AppRun --recipe cncra.yml
 
 }
 

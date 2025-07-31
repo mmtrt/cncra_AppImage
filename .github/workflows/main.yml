@@ -33,7 +33,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a single-line script
         run: |
-          sudo apt update && sudo apt install libfuse2 -y && sudo wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool && sudo chmod +x /usr/local/bin/appimagetool
+          sudo apt update && sudo apt install libfuse2 zsync -y && sudo wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool && sudo chmod +x /usr/local/bin/appimagetool
           bash deploy.sh stable
 
       - name: Upload artifact
@@ -55,7 +55,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          sudo dpkg --add-architecture i386 && sudo apt update && sudo apt install libfuse2 libfuse2:i386 libglu1-mesa:i386 && sudo wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool && sudo chmod +x /usr/local/bin/appimagetool
+          sudo dpkg --add-architecture i386 && sudo apt update && sudo apt install libfuse2 libfuse2:i386 libglu1-mesa:i386 zsync && sudo wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool && sudo chmod +x /usr/local/bin/appimagetool
           xvfb-run --server-args="-screen 0 1024x768x24" bash deploy.sh stablewp
 
       - name: Upload artifact

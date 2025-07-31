@@ -28,8 +28,33 @@ mkdir -p AppDir/winedata ; cp -r "ra-mp/"* AppDir
 
 # sed -i "s|520|$NVDV|" cncra.yml
 
-./squashfs-root/AppRun --recipe cncra.yml
+./squashfs-root/AppRun --skip-appimage --recipe cncra.yml
 
+rm *.AppImage
+
+export ARCH="$(uname -m)"
+export APPIMAGE_EXTRACT_AND_RUN=1
+UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|stable|*$ARCH.AppImage.zsync"
+VERSION="1.0"
+URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
+URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
+wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime
+wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O ./uruntime-lite
+chmod +x ./uruntime*
+
+# Keep the mount point (speeds up launch time)
+sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime-lite
+
+# Add udpate info to runtime
+echo "Adding update information \"$UPINFO\" to runtime..."
+./uruntime-lite --appimage-addupdinfo "$UPINFO"
+
+echo "Generating AppImage..."
+./uruntime --appimage-mkdwarfs -f --set-owner 0 --set-group 0 --no-history --no-create-timestamp --compression zstd:level=22 -S26 -B8 --header uruntime-lite -i AppDir -o ./cncra-"$VERSION"-"$ARCH".AppImage
+
+echo "Generating zsync file..."
+zsyncmake *.AppImage -u *.AppImage
+ls -al
 }
 
 cncraswp () {
@@ -103,7 +128,32 @@ sed -i "17s/"1.0"/"1.0_WP"/" cncra.yml
 
 sed -i 's/stable|/stable-wp|/' cncra.yml
 
-./squashfs-root/AppRun --recipe cncra.yml
+./squashfs-root/AppRun --skip-appimage --recipe cncra.yml
+
+rm *.AppImage
+
+export ARCH="$(uname -m)"
+export APPIMAGE_EXTRACT_AND_RUN=1
+UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|stable-wp|*$ARCH.AppImage.zsync"
+VERSION="1.0"
+URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
+URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
+wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime
+wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O ./uruntime-lite
+chmod +x ./uruntime*
+
+# Keep the mount point (speeds up launch time)
+sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime-lite
+
+echo "Adding update information \"$UPINFO\" to runtime..."
+./uruntime-lite --appimage-addupdinfo "$UPINFO"
+
+echo "Generating AppImage..."
+./uruntime --appimage-mkdwarfs -f --set-owner 0 --set-group 0 --no-history --no-create-timestamp --compression zstd:level=22 -S26 -B8 --header uruntime-lite -i AppDir -o ./cncra-"$VERSION"_WP-"$ARCH".AppImage
+
+echo "Generating zsync file..."
+zsyncmake *.AppImage -u *.AppImage
+ls -al
 
 }
 
